@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import './Header.css';
 import OlxLogo from '../../assets/OlxLogo';
@@ -6,7 +6,20 @@ import Search from '../../assets/Search';
 import Arrow from '../../assets/Arrow';
 import SellButton from '../../assets/SellButton';
 import SellButtonPlus from '../../assets/SellButtonPlus';
+import { useHistory } from 'react-router-dom'
+import AuthContext from '../../contexts/authContext';
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
+
+
 function Header() {
+  let history = useHistory()
+  let { user, setUser } = useContext(AuthContext)
+  let data = localStorage.getItem("dname")
+  if (data) {
+    setUser(data)
+  }
+
   return (
     <div className="headerParentDiv">
       <div className="headerChildDiv">
@@ -33,11 +46,22 @@ function Header() {
           <span> ENGLISH </span>
           <Arrow></Arrow>
         </div>
+
         <div className="loginPage">
-          <span>Login</span>
+
+          <span>{data ? data : <button onClick={() => history.push("/login")}>Login</button>}</span>
           <hr />
         </div>
-
+        {/* <button className='btn'> {data ? "logout"} </button> */}
+        {
+          data ? <button onClick={() => {
+            let des = window.confirm("Are you sure you want to logout")
+            console.log(des);
+          }}>Logout</button>
+            : <button onClick={() => {
+              history.push('/signup')
+            }}> Signup</button>
+        }
         <div className="sellMenu">
           <SellButton></SellButton>
           <div className="sellMenuContent">
@@ -46,7 +70,7 @@ function Header() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 

@@ -12,5 +12,23 @@ module.exports = {
                     reject(err)
                 })
         })
+    },
+
+    LoginUser: (data) => {
+        return new Promise(async (resolve, reject) => {
+            let doccheck = await db.get().collection(collections.USER_COLLECTION).findOne({ email: data.email })
+            console.log(doccheck);
+            if (!doccheck) {
+                reject("noacc")
+            }
+            console.log(doccheck);
+            let passcheck = await bcrypt.compare(data.password, doccheck.password)
+            if (passcheck) {
+                resolve(doccheck)
+            } else {
+                reject("wrongpass")
+            }
+        })
     }
+
 }

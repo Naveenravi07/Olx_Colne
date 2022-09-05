@@ -17,4 +17,20 @@ router.post('/signup', (req, res) => {
         res.status(400)
     })
 })
+
+router.post('/login', (req, res) => {
+    let data = req.body
+    userController.LoginUser(data).then((result) => {
+        res.send(result)
+    }).catch((err) => {
+        console.log(err);
+        if (err == "noacc") {
+            res.status(200).send("noacc")
+        } else if (err == "wrongpass") {
+            res.send("wrongpass")
+        }
+    })
+})
+
+
 module.exports = router;

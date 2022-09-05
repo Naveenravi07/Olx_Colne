@@ -10,7 +10,7 @@ import AuthContext from '../../contexts/authContext'
 export default function Signup() {
 
   let history = useHistory()
-  let { setUser } = useContext(AuthContext)
+  let { user, setUser } = useContext(AuthContext)
 
   let [name, setName] = useState('')
   let [phone, setphone] = useState('')
@@ -18,8 +18,17 @@ export default function Signup() {
   let [password, setpassword] = useState('')
 
   useEffect(() => {
-    if (localStorage.getItem("user")) {
-      return history.push('/')
+    if (user.name==null) {
+      console.log("no user");
+      let temp = localStorage.getItem("user")
+      if (temp) {
+        setUser(temp)
+        history.push("/")
+      } else {
+        history.push('/signup')
+      }
+    } else {
+      history.push("/")
     }
   })
 
@@ -34,7 +43,9 @@ export default function Signup() {
         name, phone, email, id
       }
       setUser(data)
-      localStorage.setItem("user", data)
+      localStorage.setItem("id", id)
+      localStorage.setItem("user", JSON.stringify(data))
+      localStorage.setItem("dname", name)
       history.push('/')
     })
   }

@@ -10,7 +10,6 @@ import axios from '../axios/axios';
 import AuthContext from '../contexts/authContext';
 function Home(props) {
   let { user } = useContext(AuthContext)
-  console.log(user);
   return (
     <div className="homeParentDiv">
       <Header />
