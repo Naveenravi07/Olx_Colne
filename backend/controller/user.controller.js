@@ -29,6 +29,22 @@ module.exports = {
                 reject("wrongpass")
             }
         })
-    }
+    },
 
+    addProduct: (data) => {
+        return new Promise(async (resolve, reject) => {
+            await db.get().collection(collections.PRODUCTS_COLLECTION).insertOne(data).then((res) => {
+                resolve(res)
+            }).catch((err) => {
+                reject(err)
+            })
+        })
+    },
+
+    getAllProducts: () => {
+        return new Promise(async (resolve, reject) => {
+            let products = await db.get().collection(collections.PRODUCTS_COLLECTION).find().toArray()
+            resolve(products)
+        })
+    }
 }

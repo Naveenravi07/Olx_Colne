@@ -1,10 +1,17 @@
-import React from 'react';
+import axios from '../../axios/axios';
+import React, { useEffect, useState } from 'react';
 
 import Heart from '../../assets/Heart';
 import './Post.css';
 
 function Posts() {
-
+  let [pro, setPro] = useState([])
+  useEffect(() => {
+    axios.post("/products", "").then((res) => {
+      console.log(res.data);
+      setPro(res.data)
+    })
+  }, [Posts])
   return (
     <div className="postParentDiv">
       <div className="moreView">
@@ -13,24 +20,32 @@ function Posts() {
           <span>View more</span>
         </div>
         <div className="cards">
-          <div
-            className="card"
-          >
-            <div className="favorite">
-              <Heart></Heart>
-            </div>
-            <div className="image">
-              <img src="../../../Images/R15V3.jpg" alt="" />
-            </div>
-            <div className="content">
-              <p className="rate">&#x20B9; 250000</p>
-              <span className="kilometer">Two Wheeler</span>
-              <p className="name"> YAMAHA R15V3</p>
-            </div>
-            <div className="date">
-              <span>Tue May 04 2021</span>
-            </div>
-          </div>
+
+          {
+            pro.map((obj) => {
+              return (
+                <div
+                  className="card"
+                >
+                  <div className="favorite">
+                    <Heart></Heart>
+                  </div>
+                  <div className="image">
+                    <img src={obj.url} alt="" />
+                  </div>
+                  <div className="content">
+                    <p className="rate">&#x20B9; {obj.name}</p>
+                    <span className="kilometer">{obj.category}</span>
+                    <p className="name"> {obj.price} </p>
+                  </div>
+                  <div className="date">
+                    <span> {obj.date.replace("GMT")}</span>
+                  </div>
+                </div>
+              )
+            })
+          }
+
         </div>
       </div>
       <div className="recommendations">

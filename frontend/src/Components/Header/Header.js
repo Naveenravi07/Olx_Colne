@@ -55,8 +55,14 @@ function Header() {
         {/* <button className='btn'> {data ? "logout"} </button> */}
         {
           data ? <button onClick={() => {
-            let des = window.confirm("Are you sure you want to logout")
-            console.log(des);
+            let des = false
+            des = window.confirm("Are you sure you want to logout")
+            if (des) {
+              console.log(des);
+              localStorage.clear("user")
+              setUser({})
+            }
+
           }}>Logout</button>
             : <button onClick={() => {
               history.push('/signup')

@@ -33,4 +33,19 @@ router.post('/login', (req, res) => {
 })
 
 
+router.post('/addproduct', (req, res) => {
+    let data = req.body
+    userController.addProduct(data).then((resp) => {
+        res.send(resp)
+    }).catch((err) => {
+        res.send(err)
+    })
+})
+
+router.post('/products', (req, res) => {
+   
+    userController.getAllProducts().then((products) => {
+        res.send(products)
+    })
+})
 module.exports = router;
