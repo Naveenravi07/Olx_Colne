@@ -43,9 +43,18 @@ router.post('/addproduct', (req, res) => {
 })
 
 router.post('/products', (req, res) => {
-   
+
     userController.getAllProducts().then((products) => {
         res.send(products)
+    })
+})
+
+router.post('/userdetails', (req, res) => {
+    console.log(req.body.userid);
+    userController.getUserDetails(req.body.userid).then((resp) => {
+        res.send(resp)
+    }).catch((err) => {
+        res.status(400).send("Nouser")
     })
 })
 module.exports = router;
