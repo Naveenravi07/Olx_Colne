@@ -1,11 +1,16 @@
 import axios from '../../axios/axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 
 import Heart from '../../assets/Heart';
 import './Post.css';
+import { useHistory } from 'react-router-dom'
+import { postContext } from '../../contexts/postContext';
 
 function Posts() {
+  let history = useHistory()
   let [pro, setPro] = useState([])
+  let { setPost } = useContext(postContext)
+
   useEffect(() => {
     axios.post("/products", "").then((res) => {
       console.log(res.data);
@@ -25,7 +30,10 @@ function Posts() {
             pro.map((obj) => {
               return (
                 <div
-                  className="card"
+                  className="card" onClick={() => {
+                    setPost(obj)
+                    history.push('/view')
+                  }}
                 >
                   <div className="favorite">
                     <Heart></Heart>
@@ -39,7 +47,7 @@ function Posts() {
                     <p className="name"> {obj.price} </p>
                   </div>
                   <div className="date">
-                    <span> {obj.date.replace("GMT")}</span>
+                    <span> {obj.date} </span>
                   </div>
                 </div>
               )

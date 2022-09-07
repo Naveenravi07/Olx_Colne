@@ -19,7 +19,7 @@ const Create = () => {
     console.log(image);
 
     firebase.storage().ref(`/image/${image.name}`).put(image).then(({ ref }) => {
-      let date = new Date().toString()
+      let date = new Date().toLocaleDateString('en-us', { weekday: "long", year: "numeric", month: "short", day: "numeric" })
       ref.getDownloadURL().then((url) => {
         let datas = {
           name, category, price, userid, url, date

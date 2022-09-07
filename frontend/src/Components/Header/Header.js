@@ -68,7 +68,7 @@ function Header() {
               history.push('/signup')
             }}> Signup</button>
         }
-        <div className="sellMenu">
+        <div onClick={() => history.push('/addproduct')} className="sellMenu">
           <SellButton></SellButton>
           <div className="sellMenuContent">
             <SellButtonPlus></SellButtonPlus>
