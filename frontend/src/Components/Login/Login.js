@@ -5,7 +5,9 @@ import { useHistory } from 'react-router-dom'
 import axios from '../../axios/axios'
 import apiDetails from '../../constants/apiDetails';
 import AuthContext from '../../contexts/authContext'
-
+import googleicon from '../../icons/google.png'
+import { auth } from '../../firebase/config';
+import { googleProvider } from '../../firebase/config';
 function Login() {
 
   let history = useHistory()
@@ -51,6 +53,15 @@ function Login() {
     })
   }
 
+  const handleGoogleLogin=()=>{
+    auth.signInWithPopup(googleProvider).then((result)=>{
+      alert(result.user.photoURL)
+      alert(result.user.email)
+      alert(result.user.displayName)
+      console.log(result.user);
+    })
+  }
+
   return (
     <div>
       <div className="loginParentDiv">
@@ -78,6 +89,7 @@ function Login() {
           <br />
           <br />
           <button onClick={loginuser}>Login</button>
+          <img src={googleicon} onClick={handleGoogleLogin} />
         </form>
 
       </div>
