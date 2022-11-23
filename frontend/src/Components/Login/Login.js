@@ -8,7 +8,11 @@ import AuthContext from '../../contexts/authContext'
 import googleicon from '../../icons/google.png'
 import { auth } from '../../firebase/config';
 import { googleProvider } from '../../firebase/config';
+import { useSelector, useDispatch } from 'react-redux';
+import { addUser } from '../../Store/States/AuthSlice';
 function Login() {
+  const dispatch = useDispatch();
+  console.log(useSelector((state) => state.auth));
 
   let history = useHistory()
   let [email, setEmail] = useState('')
@@ -27,7 +31,7 @@ function Login() {
     } else {
       history.push("/")
     }
-  })
+  }, [])
   let loginuser = (e) => {
     e.preventDefault()
     let data = { email, password }
@@ -41,24 +45,35 @@ function Login() {
         name, id, phone, email
       }
       console.log(data);
-      setUser(data)
-      localStorage.setItem("id", id)
-      localStorage.setItem("user", JSON.stringify(data))
-      localStorage.setItem("dname", name)
+      dispatch(addUser({
+        user: {
+          "name": result.data.name,
+          "id": result.data._id,
+          "phone": result.data.phone,
+          "email": result.data.email
+        }
+      }))
       history.push('/')
 
     }).catch((err) => {
-      
+
       console.log(err);
     })
   }
 
-  const handleGoogleLogin=()=>{
-    auth.signInWithPopup(googleProvider).then((result)=>{
-      alert(result.user.photoURL)
-      alert(result.user.email)
-      alert(result.user.displayName)
-      console.log(result.user);
+  const handleGoogleLogin = (e) => {
+    e.preventDefault()
+    auth.signInWithPopup(googleProvider).then((result) => {
+      dispatch(addUser({
+        user: {
+          "id":result.user.uid,
+          "name": result.user.displayName,
+          "email": result.user.email,
+          "pfp": result.user.photoURL,
+          "phone": result.user.phoneNumber,
+        },
+      }));
+      history.push('/')
     })
   }
 
@@ -66,7 +81,7 @@ function Login() {
     <div>
       <div className="loginParentDiv">
         <img width="200px" height="200px" alt='img' src={Logo}></img>
-        <form>
+        <form onSubmit={handleGoogleLogin}>
           <label>Email</label>
           <br />
           <input
@@ -88,7 +103,8 @@ function Login() {
           />
           <br />
           <br />
-          <button onClick={loginuser}>Login</button>
+          <button value={'submit'} type={'submit'} >Submit</button>
+          {/* <button onClick={loginuser}>Login</button> */}
           <img src={googleicon} onClick={handleGoogleLogin} />
         </form>
 

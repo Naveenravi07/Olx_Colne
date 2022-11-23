@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import './Header.css';
 import OlxLogo from '../../assets/OlxLogo';
@@ -7,12 +7,16 @@ import Arrow from '../../assets/Arrow';
 import SellButton from '../../assets/SellButton';
 import SellButtonPlus from '../../assets/SellButtonPlus';
 import { useHistory } from 'react-router-dom'
-import AuthContext from '../../contexts/authContext';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
-
+import AuthContext from '../../contexts/authContext';
+import { useSelector } from 'react-redux';
 
 function Header() {
+  const user2=useSelector((state)=>state.auth)
+useEffect(()=>{
+  console.log(user2.user?.name);
+},[])
   let history = useHistory()
   let { user, setUser } = useContext(AuthContext)
   let data = localStorage.getItem("dname")
@@ -49,7 +53,7 @@ function Header() {
 
         <div className="loginPage">
 
-          <span>{data ? data : <button onClick={() => history.push("/login")}>Login</button>}</span>
+          <span>{user2.loggedin ?user2.user.name : <button onClick={() => history.push("/login")}>Login</button>}</span>
           <hr />
         </div>
         {/* <button className='btn'> {data ? "logout"} </button> */}
