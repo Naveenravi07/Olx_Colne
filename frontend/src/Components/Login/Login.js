@@ -1,63 +1,35 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Logo from '../../olx-logo.png';
 import './Login.css';
 import { useHistory } from 'react-router-dom'
-import axios from '../../axios/axios'
-import apiDetails from '../../constants/apiDetails';
-import AuthContext from '../../contexts/authContext'
 import googleicon from '../../icons/google.png'
 import { auth } from '../../firebase/config';
 import { googleProvider } from '../../firebase/config';
 import { useSelector, useDispatch } from 'react-redux';
 import { addUser } from '../../Store/States/AuthSlice';
+
 function Login() {
   const dispatch = useDispatch();
   console.log(useSelector((state) => state.auth));
-
   let history = useHistory()
   let [email, setEmail] = useState('')
   let [password, setpassword] = useState('')
-  let { user, setUser } = useContext(AuthContext)
-  useEffect(() => {
-    if (user.name == null) {
-      console.log("no user");
-      let temp = localStorage.getItem("user")
-      if (temp) {
-        setUser(temp)
-        history.push("/")
-      } else {
-        history.push('/login')
-      }
-    } else {
-      history.push("/")
-    }
-  }, [])
+
+
   let loginuser = (e) => {
     e.preventDefault()
     let data = { email, password }
-    axios.post(apiDetails.login, data).then((result) => {
-
-      let id = result.data._id
-      let name = result.data.name
-      let phone = result.data.phone
-      let email = result.data.email
-      data = {
-        name, id, phone, email
-      }
-      console.log(data);
+    auth.signInWithEmailAndPassword(email, password).then((result) => {
+      console.log(result.user);
       dispatch(addUser({
         user: {
-          "name": result.data.name,
-          "id": result.data._id,
-          "phone": result.data.phone,
-          "email": result.data.email
+          "name": result.user.displayName,
+          "id": result.user.uid,
+          "phone": result.user.phoneNumber,
+          "email": result.user.email
         }
       }))
       history.push('/')
-
-    }).catch((err) => {
-
-      console.log(err);
     })
   }
 
@@ -66,7 +38,7 @@ function Login() {
     auth.signInWithPopup(googleProvider).then((result) => {
       dispatch(addUser({
         user: {
-          "id":result.user.uid,
+          "id": result.user.uid,
           "name": result.user.displayName,
           "email": result.user.email,
           "pfp": result.user.photoURL,
@@ -81,12 +53,13 @@ function Login() {
     <div>
       <div className="loginParentDiv">
         <img width="200px" height="200px" alt='img' src={Logo}></img>
-        <form onSubmit={handleGoogleLogin}>
+        <form onSubmit={loginuser}>
           <label>Email</label>
           <br />
           <input
             onChange={(e) => setEmail(e.target.value)}
             className="input"
+            required
             type="email"
             name="email"
             value={email}
@@ -98,6 +71,7 @@ function Login() {
             onChange={(e) => setpassword(e.target.value)}
             className="input"
             type="password"
+            required
             name="password"
             value={password}
           />

@@ -1,52 +1,39 @@
 import React, { useContext, useEffect, useState } from 'react';
-import axios from '../../axios/axios';
-import apiDetails from '../../constants/apiDetails';
 import Logo from '../../olx-logo.png';
 import './Signup.css';
 import { useHistory } from 'react-router-dom'
-import AuthContext from '../../contexts/authContext'
+import { auth } from '../../firebase/config';
+import { useDispatch } from 'react-redux';
+import { addUser } from '../../Store/States/AuthSlice';
 
 
 export default function Signup() {
-
+  const dispatch=useDispatch()
   let history = useHistory()
-  let { user, setUser } = useContext(AuthContext)
+
 
   let [name, setName] = useState('')
   let [phone, setphone] = useState('')
   let [email, setemail] = useState('')
   let [password, setpassword] = useState('')
 
-  useEffect(() => {
-    if (user.name==null) {
-      console.log("no user");
-      let temp = localStorage.getItem("user")
-      if (temp) {
-        setUser(temp)
-        history.push("/")
-      } else {
-        history.push('/signup')
-      }
-    } else {
-      history.push("/")
-    }
-  })
 
   const handleSubmit = (e) => {
     e.preventDefault()
     let data = { name, phone, email, password }
 
-    axios.post(apiDetails.signup, data).then((details) => {
-      console.log(details);
-      let id = details.data.status.insertedId
-      data = {
-        name, phone, email, id
-      }
-      setUser(data)
-      localStorage.setItem("id", id)
-      localStorage.setItem("user", JSON.stringify(data))
-      localStorage.setItem("dname", name)
+    auth.createUserWithEmailAndPassword(email,password).then((Response)=>{
+     Response.user.updateProfile({displayName:name,photoURL:Response.user.photoURL}).then((res)=>{
+      dispatch(addUser({
+        user:{
+          "name":name,
+          "id":Response.user.uid,
+          "email":Response.user.email,
+          "phone":Response.user.phoneNumber
+        }
+      }))
       history.push('/')
+     }) 
     })
   }
 
